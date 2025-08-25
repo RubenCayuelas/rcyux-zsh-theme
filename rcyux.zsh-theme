@@ -8,7 +8,7 @@ _VIRTUALENV_INFO_='$(virtualenv_info)'
 ZSH_THEME_VIRTUALENV_PREFIX="%{$FG[116]%}("
 ZSH_THEME_VIRTUALENV_SUFFIX=") %{$reset_color%}"
 
-ZSH_THEME_GIT_PREFIX="%{$fg_bold[blue]%}git:(%{$fg[red]%}"
+ZSH_THEME_GIT_PREFIX="%{$fg_bold[blue]%}(%{$fg[red]%}"
 ZSH_THEME_GIT_SUFFIX="%{$fg_bold[blue]%})%{$reset_color%} "
 ZSH_THEME_GIT_DIRTY=" %{$fg[yellow]%}✗"
 ZSH_THEME_GIT_CLEAN=" %{$fg[green]%}✔"
@@ -60,7 +60,7 @@ function virtualenv_info() {
 }
 
 function get_current_time() {
-  echo "$(matte_grey '%D{%d/%m %T}') $(get_seperator)"
+  echo "   $(matte_grey '%D{%d/%m %T}')   "
 }
 
 function git_branch() {
@@ -100,19 +100,11 @@ function git_branch() {
   fi
 }
 
-function get_seperator() {
-  echo "$(matte_grey)"
-}
-
-function top_right_corner() {
-  echo "$(get_seperator)$(matte_grey ╮)"
-}
-
 function get_space() {
   local size=$1
-  local space=" "
+  local space="—"
   while [[ $size -gt 0 ]]; do
-    space="$space "
+    space="$space—"
     let size=$size-1
   done
   echo "$(matte_grey $space)"
