@@ -60,7 +60,7 @@ function virtualenv_info() {
 }
 
 function get_current_time() {
-  echo "   $(matte_grey '%D{%d/%m %T}')   "
+  echo "$(matte_grey '%D{%d/%m %T}')"
 }
 
 function git_branch() {
@@ -100,45 +100,12 @@ function git_branch() {
   fi
 }
 
-function get_space() {
-  local size=$1
-  local space="—"
-  while [[ $size -gt 0 ]]; do
-    space="$space—"
-    let size=$size-1
-  done
-  echo "$(matte_grey $space)"
-}
-
 function matte_grey() {
   echo "%{$FG[240]%}$1%{$reset_color%}"
 }
 
-function prompt_len() {
-  emulate -L zsh
-  local -i COLUMNS=${2:-COLUMNS}
-  local -i x y=${#1} m
-  if (( y )); then
-    while (( ${${(%):-$1%$y(l.1.0)}[-1]} )); do
-      x=y
-      (( y *= 2 ))
-    done
-    while (( y > x + 1 )); do
-      (( m = x + (y - x) / 2 ))
-      (( ${${(%):-$1%$m(l.x.y)}[-1]} = m ))
-    done
-  fi
-  echo $x
-}
-
 function prompt_header() {
-  local left_prompt="$(get_current_dir) $(git_branch)"
-  local right_prompt="$(get_current_time)"
-  local prompt_len=$(prompt_len $left_prompt$right_prompt)
-  local space_size=$(( $COLUMNS - $prompt_len - 1 ))
-  local space=$(get_space $space_size)
-
-  print -rP "$left_prompt$space$right_prompt"
+  print -rP "$(get_current_dir) $(git_branch) $(get_current_time)"
 }
 
 postcmd_newline
