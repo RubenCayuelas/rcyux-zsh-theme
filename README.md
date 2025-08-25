@@ -7,8 +7,9 @@ Based on oh-my-zsh's `robbyrussell` theme.
 ## Screenshot
 
 <p align="center">
-  <img width="714" height="230" alt="Captura de pantalla 2025-08-25 133757" src="https://github.com/user-attachments/assets/2cdd3431-7a01-45e7-8dcb-b07bc59628cc" />
+  <img width="865" height="299" alt="Captura de pantalla 2025-08-25 171915" src="https://github.com/user-attachments/assets/a0ee9381-6ca5-4a46-b998-1dab19364a26" />
 </p>
+
 
 ## Features
 
