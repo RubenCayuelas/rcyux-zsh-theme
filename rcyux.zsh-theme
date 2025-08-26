@@ -8,7 +8,7 @@ _VIRTUALENV_INFO_='$(virtualenv_info)'
 ZSH_THEME_VIRTUALENV_PREFIX="%{$FG[116]%}("
 ZSH_THEME_VIRTUALENV_SUFFIX=") %{$reset_color%}"
 
-ZSH_THEME_GIT_PREFIX="%{$fg_bold[blue]%}git:(%{$fg[red]%}"
+ZSH_THEME_GIT_PREFIX="%{$fg_bold[blue]%}(%{$fg[red]%}"
 ZSH_THEME_GIT_SUFFIX="%{$fg_bold[blue]%})%{$reset_color%} "
 ZSH_THEME_GIT_DIRTY=" %{$fg[yellow]%}✗"
 ZSH_THEME_GIT_CLEAN=" %{$fg[green]%}✔"
@@ -22,34 +22,49 @@ function postcmd_newline() {
   } 
 }
 
-function get_current_dir() {
-  local dir="${PWD/#$HOME/~}"
+# Asegúrate de tener los colores de zsh cargados en tu .zshrc:
+# autoload -U colors && colors
 
+function get_current_dir() {
+  local wd="$PWD"
   local colored_path=""
-  
-  if [[ $dir == "~"* ]]; then
-    # If home directory, replace with ~
+
+  if [[ $wd == "$HOME" || $wd == $HOME/* ]]; then
     colored_path="%{$fg_bold[green]%}~%{$reset_color%}"
-    dir="${dir:1}"
-  elif [[ $dir == "/" ]]; then
-    # If Root directory replace with /
-    echo "%{$fg[cyan]%}/%{$reset_color%}"
+    local rest="${wd#$HOME}"
+    if [[ -n $rest ]]; then
+      local -a parts
+      parts=("${(@s:/:)${rest#/}}")
+      local sep="%{$fg[blue]%}/%{$reset_color%}"
+      for part in "${parts[@]}"; do
+        [[ -z $part ]] && continue
+        colored_path+="$sep%{$fg_bold[cyan]%}$part%{$reset_color%}"
+      done
+    fi
+    echo "$colored_path"
     return
-  else
-    # Else start without anything
   fi
 
-  # Split the remaining path by /
-  local IFS='/'
-  local parts=("${(@s:/:)dir}")
+  if [[ $wd == "/" ]]; then
+    echo "%{$fg[red]%}/%{$reset_color%}%{$fg_bold[red]%}root%{$reset_color%}"
+    return
+  fi
 
+  local -a parts
+  parts=("${(@s:/:)wd}")
+
+  colored_path="%{$fg[red]%}/%{$reset_color%}"
+
+  local first=true
   for part in "${parts[@]}"; do
     [[ -z $part ]] && continue
-    colored_path+="%{$fg[blue]%}/%{$reset_color%}%{$fg_bold[cyan]%}$part%{$reset_color%}"
+    if $first; then
+      colored_path+="%{$fg_bold[cyan]%}$part%{$reset_color%}"
+      first=false
+    else
+      colored_path+="%{$fg[blue]%}/%{$reset_color%}%{$fg_bold[cyan]%}$part%{$reset_color%}"
+    fi
   done
-
-
-  colored_path="${colored_path%/}"
 
   echo "$colored_path"
 }
@@ -60,7 +75,7 @@ function virtualenv_info() {
 }
 
 function get_current_time() {
-  echo "$(matte_grey '%D{%d/%m %T}') $(get_seperator)"
+  echo "   $(matte_grey '%D{%d/%m %T}')   "
 }
 
 function git_branch() {
@@ -100,19 +115,11 @@ function git_branch() {
   fi
 }
 
-function get_seperator() {
-  echo "$(matte_grey)"
-}
-
-function top_right_corner() {
-  echo "$(get_seperator)$(matte_grey ╮)"
-}
-
 function get_space() {
   local size=$1
-  local space=" "
+  local space="—"
   while [[ $size -gt 0 ]]; do
-    space="$space "
+    space="$space—"
     let size=$size-1
   done
   echo "$(matte_grey $space)"
@@ -147,6 +154,7 @@ function prompt_header() {
   local space=$(get_space $space_size)
 
   print -rP "$left_prompt$space$right_prompt"
+  # print -rP "$left_prompt$right_prompt"
 }
 
 postcmd_newline
