@@ -104,6 +104,9 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+alias joder="sudo $(fc -ln -1)"
+
 alias g="git"
 alias gp="git push"
 alias gl="git pull"
@@ -115,3 +118,4 @@ alias gst="git status"
 alias gf="git fetch"
 alias gfa="git fetch -a"
 
+alias ll='ls -alF --color=auto'
